@@ -29,8 +29,11 @@ $(function () {
       $.fn.bootstrapModal = $.fn.modal.noConflict()
     },
     afterEach: function () {
+      $('.modal-backdrop, #modal-test').remove()
+      $(document.body).removeClass('modal-open')
       $.fn.modal = $.fn.bootstrapModal
       delete $.fn.bootstrapModal
+      $('#qunit-fixture').html('')
     }
   })
 
@@ -45,8 +48,7 @@ $(function () {
     $el.bootstrapModal()
     try {
       $el.bootstrapModal('noMethod')
-    }
-    catch (err) {
+    } catch (err) {
       assert.strictEqual(err.message, 'No method named "noMethod"')
     }
   })
@@ -211,7 +213,9 @@ $(function () {
       .on('shown.bs.modal', function () {
         assert.ok($('#modal-test').length, 'modal inserted into dom')
         assert.ok($('#modal-test').is(':visible'), 'modal visible')
-        $div.trigger($.Event('keydown', { which: 27 }))
+        $div.trigger($.Event('keydown', {
+          which: 27
+        }))
 
         setTimeout(function () {
           assert.ok(!$('#modal-test').is(':visible'), 'modal hidden')
@@ -231,7 +235,9 @@ $(function () {
       .on('shown.bs.modal', function () {
         assert.ok($('#modal-test').length, 'modal inserted into dom')
         assert.ok($('#modal-test').is(':visible'), 'modal visible')
-        $div.trigger($.Event('keyup', { which: 27 }))
+        $div.trigger($.Event('keyup', {
+          which: 27
+        }))
 
         setTimeout(function () {
           assert.ok($div.is(':visible'), 'modal still visible')
@@ -287,7 +293,7 @@ $(function () {
         $('#close').trigger('click')
       })
       .one('hidden.bs.modal', function () {
-        // after one open-close cycle
+        // After one open-close cycle
         assert.ok(!$('#modal-test').is(':visible'), 'modal hidden')
         $(this)
           .one('shown.bs.modal', function () {
@@ -414,8 +420,8 @@ $(function () {
     var originalPadding = $body.css('padding-right')
 
     // Hide scrollbars to prevent the body overflowing
-    $body.css('overflow', 'hidden')        // real scrollbar (for in-browser testing)
-    $('html').css('padding-right', '0px')  // simulated scrollbar (for PhantomJS)
+    $body.css('overflow', 'hidden')        // Real scrollbar (for in-browser testing)
+    $('html').css('padding-right', '0px')  // Simulated scrollbar (for PhantomJS)
 
     $('<div id="modal-test"/>')
       .on('shown.bs.modal', function () {
@@ -423,7 +429,7 @@ $(function () {
         assert.strictEqual(currentPadding, originalPadding, 'body padding should not be adjusted')
         $(this).bootstrapModal('hide')
 
-        // restore scrollbars
+        // Restore scrollbars
         $body.css('overflow', 'auto')
         $('html').css('padding-right', '16px')
         done()
